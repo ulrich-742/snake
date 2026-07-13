@@ -1,0 +1,50 @@
+.navbar {
+	width: 100%;
+	background-color: var(--color-secondary);
+	border-bottom: 1px solid var(--color-border);
+}
+
+.navbar__container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1rem 2rem;
+}
+
+.navbar__brand {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.navbar__icon {
+	font-size: 2rem;
+}
+
+.navbar__title {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--color-primary);
+}
+
+.navbar__menu {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+}
+
+.navbar__item {
+	font-size: 1rem;
+	font-weight: 500;
+	color: var(--color-text);
+
+	cursor: pointer;
+	transition: color 0.3s ease;
+}
+
+.navbar__item:hover {
+	color: var(--color-primary);
+}

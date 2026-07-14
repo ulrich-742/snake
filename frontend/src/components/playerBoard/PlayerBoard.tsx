@@ -4,9 +4,7 @@ type PlayerBoardProps = {
 	onStartGame: () => void;
 };
 
-export default function PlayerBoard({
-	onStartGame,
-}: PlayerBoardProps) {
+export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
 	return (
 		<section className="player-board">
 			<div className="player-board__container">

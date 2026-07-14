@@ -1,6 +1,10 @@
 import "./PlayerBoard.css";
 
-export default function PlayerBoard() {
+type PlayerBoardProps = {
+	onStartGame: () => void;
+};
+
+export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
 	return (
 		<section className="player-board">
 			<div className="player-board__container">
@@ -20,7 +24,11 @@ export default function PlayerBoard() {
 						maxLength={30}
 					/>
 
-					<button className="player-board__button" type="button">
+					<button
+						className="player-board__button"
+						type="button"
+						onClick={onStartGame}
+					>
 						Commencer
 					</button>
 				</div>

@@ -1,10 +1,24 @@
+import { useState } from "react";
+
 import "./PlayerBoard.css";
 
 type PlayerBoardProps = {
-	onStartGame: () => void;
+	onStartGame: (playerName: string) => void;
 };
 
 export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
+	const [playerName, setPlayerName] = useState("");
+
+	function handleStartGame() {
+		const normalizedPlayerName = playerName.trim();
+
+		if (!normalizedPlayerName) {
+			return;
+		}
+
+		onStartGame(normalizedPlayerName);
+	}
+
 	return (
 		<section className="player-board">
 			<div className="player-board__container">
@@ -22,12 +36,14 @@ export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
 						type="text"
 						placeholder="Exemple : Alex"
 						maxLength={30}
+						value={playerName}
+						onChange={(event) => setPlayerName(event.target.value)}
 					/>
 
 					<button
 						className="player-board__button"
 						type="button"
-						onClick={onStartGame}
+						onClick={handleStartGame}
 					>
 						Commencer
 					</button>

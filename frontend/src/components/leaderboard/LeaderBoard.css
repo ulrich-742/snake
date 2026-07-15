@@ -6,7 +6,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 1.5rem;
-	padding: 1.5rem;
+	padding: 0.2rem;
 	border: 1px solid var(--color-border);
 	border-radius: 1rem;
 	background-color: var(--color-secondary);
@@ -31,6 +31,12 @@
 
 .leaderboard__table-wrapper {
 	overflow-x: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.leaderboard__table-wrapper::-webkit-scrollbar {
+	display: none;
 }
 
 .leaderboard__table {

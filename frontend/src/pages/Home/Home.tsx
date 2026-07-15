@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import Footer from "../../components/footer/Footer";
 import Instructions from "../../components/instructions/Instructions";
 import Leaderboard from "../../components/leaderboard/LeaderBoard";
 import Navbar from "../../components/navbar/Navbar";
@@ -50,6 +50,7 @@ export default function Home() {
 						<Leaderboard />
 					</aside>
 				</div>
+				<Footer />
 			</main>
 		</div>
 	);

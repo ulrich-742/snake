@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-// import Instructions from "../../components/instructions/Instructions";
+import Instructions from "../../components/instructions/Instructions";
 import Leaderboard from "../../components/leaderboard/LeaderBoard";
 import Navbar from "../../components/navbar/Navbar";
 import PlayerBoard from "../../components/playerBoard/PlayerBoard";
@@ -37,7 +37,7 @@ export default function Home() {
 					<aside className="home__sidebar home__sidebar--left">
 						<PlayerBoard onStartGame={handleStartGame} />
 
-						{/* <Instructions /> */}
+						<Instructions />
 					</aside>
 
 					<div className="home__game">

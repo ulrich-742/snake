@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
+import { BOARD_SIZE, MOVE_DELAY } from "./board";
+import {
+	checkFoodCollision,
+	checkSelfCollision,
+	checkWallCollision,
+} from "./collision/collision";
+import { getNextDirection, INITIAL_DIRECTION } from "./direction";
+import { generateFood } from "./food";
+import { drawGame } from "./render";
+import { createSnake, moveSnake } from "./snake";
+import type { Direction, Position } from "./types/snake";
+
 import "./SnakeBoard.css";
 
 type GameStatus = "En attente" | "En cours" | "Partie terminée";
@@ -11,36 +23,72 @@ type SnakeBoardProps = {
 	onGameOver: (finalScore: number) => void;
 };
 
-type Position = {
-	x: number;
-	y: number;
-};
-
-const BOARD_SIZE = 400;
-const CELL_SIZE = 40;
-const MOVE_DELAY = 500;
-
-const INITIAL_SNAKE: Position[] = [
-	{ x: 4, y: 5 },
-	{ x: 3, y: 5 },
-	{ x: 2, y: 5 },
-];
-
-const INITIAL_FOOD: Position = {
-	x: 7,
-	y: 3,
-};
-
-export default function SnakeBoard({ playerName, status }: SnakeBoardProps) {
+export default function SnakeBoard({
+	playerName,
+	status,
+	onScoreChange,
+	onGameOver,
+}: SnakeBoardProps) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
+	const directionRef = useRef<Direction>(INITIAL_DIRECTION);
+	const scoreRef = useRef(0);
+
+	const [snake, setSnake] = useState<Position[]>(createSnake());
+	const [food, setFood] = useState<Position>(() => generateFood(createSnake()));
+	const [direction, setDirection] = useState<Direction>(INITIAL_DIRECTION);
+	const [score, setScore] = useState(0);
+
+	useEffect(() => {
+		directionRef.current = direction;
+	}, [direction]);
+
+	useEffect(() => {
+		scoreRef.current = score;
+	}, [score]);
 
 	useEffect(() => {
 		if (status !== "En cours") {
 			return;
 		}
 
-		setSnake(INITIAL_SNAKE);
+		const initialSnake = createSnake();
+
+		setSnake(initialSnake);
+		setFood(generateFood(initialSnake));
+		setDirection(INITIAL_DIRECTION);
+		setScore(0);
+
+		directionRef.current = INITIAL_DIRECTION;
+		scoreRef.current = 0;
+
+		onScoreChange(0);
+	}, [status, onScoreChange]);
+
+	useEffect(() => {
+		if (status !== "En cours") {
+			return;
+		}
+
+		function handleKeyDown(event: KeyboardEvent) {
+			const arrowKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+
+			if (!arrowKeys.includes(event.key)) {
+				return;
+			}
+
+			event.preventDefault();
+
+			const nextDirection = getNextDirection(directionRef.current, event.key);
+
+			directionRef.current = nextDirection;
+			setDirection(nextDirection);
+		}
+
+		window.addEventListener("keydown", handleKeyDown);
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
 	}, [status]);
 
 	useEffect(() => {
@@ -50,23 +98,53 @@ export default function SnakeBoard({ playerName, status }: SnakeBoardProps) {
 
 		const intervalId = window.setInterval(() => {
 			setSnake((currentSnake) => {
-				const currentHead = currentSnake[0];
+				const temporarySnake = moveSnake(
+					currentSnake,
+					directionRef.current,
+					false,
+				);
 
-				const newHead: Position = {
-					x: currentHead.x + 1,
-					y: currentHead.y,
-				};
+				const nextHead = temporarySnake[0];
 
-				const newSnake = [newHead, ...currentSnake.slice(0, -1)];
+				if (checkWallCollision(nextHead)) {
+					window.clearInterval(intervalId);
+					onGameOver(scoreRef.current);
 
-				return newSnake;
+					return currentSnake;
+				}
+
+				const ateFood = checkFoodCollision(nextHead, food);
+
+				const nextSnake = moveSnake(
+					currentSnake,
+					directionRef.current,
+					ateFood,
+				);
+
+				if (checkSelfCollision(nextSnake)) {
+					window.clearInterval(intervalId);
+					onGameOver(scoreRef.current);
+
+					return currentSnake;
+				}
+
+				if (ateFood) {
+					const newScore = scoreRef.current + 10;
+
+					scoreRef.current = newScore;
+					setScore(newScore);
+					onScoreChange(newScore);
+					setFood(generateFood(nextSnake));
+				}
+
+				return nextSnake;
 			});
 		}, MOVE_DELAY);
 
 		return () => {
 			window.clearInterval(intervalId);
 		};
-	}, [status]);
+	}, [food, status, onGameOver, onScoreChange]);
 
 	useEffect(() => {
 		if (status !== "En cours") {
@@ -85,43 +163,8 @@ export default function SnakeBoard({ playerName, status }: SnakeBoardProps) {
 			return;
 		}
 
-		context.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
-
-		context.strokeStyle = "#173d27";
-		context.lineWidth = 1;
-
-		for (let position = 0; position <= BOARD_SIZE; position += CELL_SIZE) {
-			context.beginPath();
-			context.moveTo(position, 0);
-			context.lineTo(position, BOARD_SIZE);
-			context.stroke();
-
-			context.beginPath();
-			context.moveTo(0, position);
-			context.lineTo(BOARD_SIZE, position);
-			context.stroke();
-		}
-
-		context.fillStyle = "#39ff88";
-
-		for (const segment of snake) {
-			context.fillRect(
-				segment.x * CELL_SIZE,
-				segment.y * CELL_SIZE,
-				CELL_SIZE,
-				CELL_SIZE,
-			);
-		}
-
-		context.fillStyle = "#ff5d5d";
-
-		context.fillRect(
-			INITIAL_FOOD.x * CELL_SIZE,
-			INITIAL_FOOD.y * CELL_SIZE,
-			CELL_SIZE,
-			CELL_SIZE,
-		);
-	}, [snake, status]);
+		drawGame(context, snake, food);
+	}, [food, snake, status]);
 
 	return (
 		<section className="snake-board">

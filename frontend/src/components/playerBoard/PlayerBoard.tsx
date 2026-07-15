@@ -3,10 +3,11 @@ import { useState } from "react";
 import "./PlayerBoard.css";
 
 type PlayerBoardProps = {
+	status: "En attente" | "En cours" | "Partie terminée";
 	onStartGame: (playerName: string) => void;
 };
 
-export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
+export default function PlayerBoard({ status, onStartGame }: PlayerBoardProps) {
 	const [playerName, setPlayerName] = useState("");
 
 	function handleStartGame() {
@@ -44,8 +45,13 @@ export default function PlayerBoard({ onStartGame }: PlayerBoardProps) {
 						className="player-board__button"
 						type="button"
 						onClick={handleStartGame}
+						disabled={status === "En cours"}
 					>
-						Commencer
+						{status === "En cours"
+							? "Partie en cours"
+							: status === "Partie terminée"
+								? "Rejouer"
+								: "Commencer"}
 					</button>
 				</div>
 			</div>

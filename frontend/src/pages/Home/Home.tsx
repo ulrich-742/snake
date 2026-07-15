@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import Footer from "../../components/footer/Footer";
+import Footer from "../../components/footer/footer";
 import Instructions from "../../components/instructions/Instructions";
-import Leaderboard from "../../components/leaderboard/Leaderboard";
+import Leaderboard from "../../components/leaderboard/LeaderBoard";
 import Navbar from "../../components/navbar/Navbar";
 import PlayerBoard from "../../components/playerBoard/PlayerBoard";
 import ScorePanel from "../../components/scorePanel/ScorePanel";
@@ -40,7 +40,7 @@ export default function Home() {
 			<main className="home__main">
 				<div className="home__layout">
 					<div className="home__left">
-						<PlayerBoard onStartGame={handleStartGame} />
+						<PlayerBoard status={gameStatus} onStartGame={handleStartGame} />
 						<Instructions />
 					</div>
 

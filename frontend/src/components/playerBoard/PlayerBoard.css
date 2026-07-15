@@ -76,6 +76,11 @@
 		opacity 0.2s ease;
 }
 
+.player-board__button:disabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
 .player-board__button:hover {
 	transform: translateY(-1px);
 	opacity: 0.9;

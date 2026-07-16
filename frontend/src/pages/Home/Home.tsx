@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { createPlayer } from "../../api/playerApi";
+import { createScore } from "../../api/scoreApi";
 import Footer from "../../components/footer/footer";
 import Instructions from "../../components/instructions/Instructions";
 import Leaderboard from "../../components/leaderboard/LeaderBoard";
@@ -13,25 +15,49 @@ import "./Home.css";
 type GameStatus = "En attente" | "En cours" | "Partie terminée";
 
 export default function Home() {
+	const [playerId, setPlayerId] = useState<number | null>(null);
 	const [playerName, setPlayerName] = useState("");
 	const [gameStatus, setGameStatus] = useState<GameStatus>("En attente");
 	const [score, setScore] = useState(0);
 	const [bestScore, setBestScore] = useState(0);
+	const [leaderboardRefreshKey, setLeaderboardRefreshKey] = useState(0);
 
-	function handleStartGame(name: string) {
-		setPlayerName(name);
-		setScore(0);
-		setGameStatus("En cours");
-	}
+	async function handleStartGame(name: string) {
+		try {
+			const player = await createPlayer(name);
 
-	function handleGameOver(finalScore: number) {
-		setScore(finalScore);
-		setGameStatus("Partie terminée");
+			setPlayerId(player.id);
+			setPlayerName(player.pseudo);
+			setScore(0);
+			setGameStatus("En cours");
+		} catch (error) {
+			console.error(error);
 
-		if (finalScore > bestScore) {
-			setBestScore(finalScore);
+			if (error instanceof Error) {
+				window.alert(error.message);
+			}
 		}
 	}
+
+async function handleGameOver(finalScore: number) {
+	setScore(finalScore);
+	setGameStatus("Partie terminée");
+
+	if (finalScore > bestScore) {
+		setBestScore(finalScore);
+	}
+
+	if (playerId === null) {
+		return;
+	}
+
+	try {
+		await createScore(playerId, finalScore, 0);
+		setLeaderboardRefreshKey((currentKey) => currentKey + 1);
+	} catch (error) {
+		console.error(error);
+	}
+}
 
 	return (
 		<div className="home">
@@ -40,7 +66,11 @@ export default function Home() {
 			<main className="home__main">
 				<div className="home__layout">
 					<div className="home__left">
-						<PlayerBoard status={gameStatus} onStartGame={handleStartGame} />
+						<PlayerBoard
+							status={gameStatus}
+							onStartGame={handleStartGame}
+						/>
+
 						<Instructions />
 					</div>
 
@@ -60,7 +90,7 @@ export default function Home() {
 							status={gameStatus}
 						/>
 
-						<Leaderboard />
+						<Leaderboard refreshKey={leaderboardRefreshKey} />
 					</div>
 				</div>
 			</main>

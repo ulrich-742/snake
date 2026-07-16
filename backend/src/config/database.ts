@@ -3,18 +3,10 @@ import mysql from "mysql2/promise";
 
 dotenv.config();
 
-const {
-	DB_HOST,
-	DB_PORT,
-	DB_USER,
-	DB_PASSWORD,
-	DB_NAME,
-} = process.env;
+const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 
 if (!DB_HOST || !DB_PORT || !DB_USER || DB_PASSWORD === undefined || !DB_NAME) {
-	throw new Error(
-		"Configuration MySQL incomplète dans le fichier .env.",
-	);
+	throw new Error("Configuration MySQL incomplète dans le fichier .env.");
 }
 
 const pool = mysql.createPool({

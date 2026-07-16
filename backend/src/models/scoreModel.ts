@@ -28,9 +28,7 @@ export async function findAllScores(): Promise<Score[]> {
 	return rows;
 }
 
-export async function findScoreById(
-	scoreId: number,
-): Promise<Score | null> {
+export async function findScoreById(scoreId: number): Promise<Score | null> {
 	const [rows] = await pool.query<Score[]>(
 		`
 			SELECT id, player_id, score, duration, created_at
@@ -76,9 +74,7 @@ export async function updateScoreById(
 	return result.affectedRows > 0;
 }
 
-export async function deleteScoreById(
-	scoreId: number,
-): Promise<boolean> {
+export async function deleteScoreById(scoreId: number): Promise<boolean> {
 	const [result] = await pool.execute<ResultSetHeader>(
 		`
 			DELETE FROM scores
@@ -96,12 +92,12 @@ export async function findLeaderboard(): Promise<LeaderboardEntry[]> {
 			SELECT
 				p.id,
 				p.pseudo,
-				MAX(s.score) AS score
+				COALESCE(MAX(s.score), 0) AS score
 			FROM players AS p
-			INNER JOIN scores AS s
-				ON s.player_id = p.id
+			LEFT JOIN scores AS s
+				ON p.id = s.player_id
 			GROUP BY p.id, p.pseudo
-			ORDER BY score DESC
+			ORDER BY score DESC, p.created_at ASC
 			LIMIT 10
 		`,
 	);

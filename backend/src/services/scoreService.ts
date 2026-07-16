@@ -31,7 +31,6 @@ export async function createScore(
 		throw new Error("Joueur introuvable.");
 	}
 
-
 	const scoreId = await insertScore(playerId, score, duration);
 
 	return await findScoreById(scoreId);
@@ -42,12 +41,7 @@ export async function updateScore(
 	score: number,
 	duration: number,
 ) {
-
-	const updated = await updateScoreById(
-		scoreId,
-		score,
-		duration,
-	);
+	const updated = await updateScoreById(scoreId, score, duration);
 
 	if (!updated) {
 		return null;

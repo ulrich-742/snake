@@ -8,19 +8,13 @@ import {
 	updatePlayer,
 } from "../services/playerService.js";
 
-export async function readPlayers(
-	_request: Request,
-	response: Response,
-) {
+export async function readPlayers(_request: Request, response: Response) {
 	const players = await getPlayers();
 
 	response.status(200).json(players);
 }
 
-export async function readPlayer(
-	request: Request,
-	response: Response,
-) {
+export async function readPlayer(request: Request, response: Response) {
 	const playerId = Number(request.params.id);
 
 	const player = await getPlayer(playerId);
@@ -36,10 +30,7 @@ export async function readPlayer(
 	response.status(200).json(player);
 }
 
-export async function addPlayer(
-	request: Request,
-	response: Response,
-) {
+export async function addPlayer(request: Request, response: Response) {
 	try {
 		const { pseudo } = request.body;
 
@@ -53,10 +44,7 @@ export async function addPlayer(
 	}
 }
 
-export async function editPlayer(
-	request: Request,
-	response: Response,
-) {
+export async function editPlayer(request: Request, response: Response) {
 	try {
 		const playerId = Number(request.params.id);
 		const { pseudo } = request.body;
@@ -79,10 +67,7 @@ export async function editPlayer(
 	}
 }
 
-export async function deletePlayer(
-	request: Request,
-	response: Response,
-) {
+export async function deletePlayer(request: Request, response: Response) {
 	const playerId = Number(request.params.id);
 
 	const deleted = await removePlayer(playerId);

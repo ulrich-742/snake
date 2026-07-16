@@ -1,0 +1,30 @@
+{
+  "name": "snake",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+
+    "check": "npm run check --prefix backend",
+    "format": "npm run format --prefix backend",
+
+    "check:backend": "npm run check --prefix backend",
+    "format:backend": "npm run format --prefix backend",
+
+    "check:frontend": "npm run check --prefix frontend",
+    "format:frontend": "npm run format --prefix frontend",
+
+    "install:all": "npm install --prefix backend && npm install --prefix frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ulrich-742/snake.git"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

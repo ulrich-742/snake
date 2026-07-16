@@ -21,9 +21,7 @@ export async function findAllPlayers(): Promise<Player[]> {
 	return rows;
 }
 
-export async function findPlayerById(
-	playerId: number,
-): Promise<Player | null> {
+export async function findPlayerById(playerId: number): Promise<Player | null> {
 	const [rows] = await pool.query<Player[]>(
 		`
 			SELECT id, pseudo, created_at, updated_at
@@ -51,9 +49,7 @@ export async function findPlayerByPseudo(
 	return rows[0] ?? null;
 }
 
-export async function insertPlayer(
-	pseudo: string,
-): Promise<number> {
+export async function insertPlayer(pseudo: string): Promise<number> {
 	const [result] = await pool.execute<ResultSetHeader>(
 		`
 			INSERT INTO players (pseudo)
@@ -81,9 +77,7 @@ export async function updatePlayerById(
 	return result.affectedRows > 0;
 }
 
-export async function deletePlayerById(
-	playerId: number,
-): Promise<boolean> {
+export async function deletePlayerById(playerId: number): Promise<boolean> {
 	const [result] = await pool.execute<ResultSetHeader>(
 		`
 			DELETE FROM players

@@ -11,9 +11,9 @@ export default function Navbar() {
 				</div>
 
 				<div className="navbar__menu">
-					<div className="navbar__item">Jeu</div>
+					{/* <div className="navbar__item">Jeu</div>
 
-					<div className="navbar__item">Classement</div>
+					<div className="navbar__item">Classement</div> */}
 				</div>
 			</div>
 		</nav>

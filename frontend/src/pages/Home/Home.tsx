@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { createPlayer } from "../../api/playerApi";
-import { createScore } from "../../api/scoreApi";
+import { createScore, getLeaderboard } from "../../api/scoreApi";
 import Footer from "../../components/footer/footer";
 import Instructions from "../../components/instructions/Instructions";
 import Leaderboard from "../../components/leaderboard/LeaderBoard";
@@ -22,6 +22,21 @@ export default function Home() {
 	const [bestScore, setBestScore] = useState(0);
 	const [leaderboardRefreshKey, setLeaderboardRefreshKey] = useState(0);
 
+	async function loadGlobalBestScore() {
+		try {
+			const leaderboard = await getLeaderboard();
+			const globalBestScore = leaderboard[0]?.score ?? 0;
+
+			setBestScore(globalBestScore);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	useEffect(() => {
+		void loadGlobalBestScore();
+	}, []);
+
 	async function handleStartGame(name: string) {
 		try {
 			const player = await createPlayer(name);
@@ -30,6 +45,8 @@ export default function Home() {
 			setPlayerName(player.pseudo);
 			setScore(0);
 			setGameStatus("En cours");
+
+			setLeaderboardRefreshKey((currentKey) => currentKey + 1);
 		} catch (error) {
 			console.error(error);
 
@@ -39,25 +56,24 @@ export default function Home() {
 		}
 	}
 
-async function handleGameOver(finalScore: number) {
-	setScore(finalScore);
-	setGameStatus("Partie terminée");
+	async function handleGameOver(finalScore: number) {
+		setScore(finalScore);
+		setGameStatus("Partie terminée");
 
-	if (finalScore > bestScore) {
-		setBestScore(finalScore);
-	}
+		if (playerId === null) {
+			return;
+		}
 
-	if (playerId === null) {
-		return;
-	}
+		try {
+			await createScore(playerId, finalScore, 0);
 
-	try {
-		await createScore(playerId, finalScore, 0);
-		setLeaderboardRefreshKey((currentKey) => currentKey + 1);
-	} catch (error) {
-		console.error(error);
+			setLeaderboardRefreshKey((currentKey) => currentKey + 1);
+
+			await loadGlobalBestScore();
+		} catch (error) {
+			console.error(error);
+		}
 	}
-}
 
 	return (
 		<div className="home">

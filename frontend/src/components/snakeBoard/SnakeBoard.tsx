@@ -170,7 +170,7 @@ export default function SnakeBoard({
 		<section className="snake-board">
 			<div className="snake-board__container">
 				<div className="snake-board__header">
-					<span className="snake-board__title">Plateau de jeu</span>
+					<span className="snake-board__title">Arène</span>
 				</div>
 
 				<div className="snake-board__content">

@@ -1,0 +1,74 @@
+#  Snake Game
+
+A Snake game built with **React**, **TypeScript**, **Express**, and **MySQL**.
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ulrich-742/snake.git
+cd snake
+```
+
+Install all dependencies:
+
+```bash
+npm run install:all
+```
+
+## Database
+
+Create a MySQL database:
+
+```sql
+CREATE DATABASE snake_game;
+```
+
+Then import the project's SQL tables.
+
+## Environment Variables
+
+Create a `backend/.env` file:
+
+```env
+APP_PORT=3310
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=snake_game
+```
+
+## Run the Project
+
+From the project root:
+
+```bash
+npm run dev
+```
+
+Frontend:
+
+```
+http://localhost:5173
+```
+
+Backend:
+
+```
+http://localhost:3310
+```
+
+## Tech Stack
+
+- React
+- TypeScript
+- Express
+- MySQL
+- Biome
+
+## Author
+
+Ulrich Amoussou
